@@ -30,10 +30,15 @@ module.exports.doesUserExists = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(400).send({ message: 'Пользователь по указанному ID не найден' });
+        res.status(404).send({ message: 'Пользователь по указанному ID не найден' });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Пользователь по указанному ID не найден' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 module.exports.updateUser = (req, res) => {

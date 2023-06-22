@@ -17,7 +17,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use('*', (req, res) => {
-  res.send({ message: 'Такой страницы не существует' });
+  res.status(404).send({ message: 'Такой страницы не существует' });
 });
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));

@@ -46,14 +46,15 @@ module.exports.likeCard = (req, res) => {
       if (card) {
         res.send(card);
       } else {
-        res.status(400).send({ message: 'Карточка с указанным ID не найдена' });
+        res.status(404).send({ message: 'Карточка с указанным ID не найдена' });
       }
     })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
       }
+
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
 };

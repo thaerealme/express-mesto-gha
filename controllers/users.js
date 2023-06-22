@@ -29,10 +29,10 @@ module.exports.doesUserExists = (req, res) => {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Пользователь по указанному ID не найден' });
+        return res.status(404).send({ message: 'Пользователь по указанному ID не найден' });
       }
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Пользователь по указанному ID не найден' });
+        return res.status(400).send({ message: 'Пользователь по указанному ID не найден' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });

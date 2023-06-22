@@ -25,17 +25,15 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.doesUserExists = (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(404).send({ message: 'Пользователь по указанному ID не найден' });
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (user) {
+        res.send(user);
+      } else {
+        res.status(404).send({ message: 'Пользователь по указанному ID не найден' });
       }
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Пользователь по указанному ID не найден' });
-      }
-      return res.status(500).send({ message: 'Произошла ошибка' });
-    });
+    })
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.updateUser = (req, res) => {

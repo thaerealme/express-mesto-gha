@@ -42,13 +42,17 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .then((card) => {
+      if (card) {
+        res.send(card);
+      } else {
+        res.status(400).send({ message: 'Карточка с указанным ID не найдена' });
+      }
+    })
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
-      }
-      if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Карточка с указанным ID не найдена' });
+        return res.status(404).send({ message: 'Переданы некорректные данные для постановки лайка' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });

@@ -25,11 +25,17 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
-    .then((card) => res.send(card))
+  Card.findByIdAndRemove(req.params.cardId)
+    .then((card) => {
+      if (card) {
+        res.send(card);
+      } else {
+        res.status(404).send({ message: 'Карточка с указанным ID не найдена' });
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(404).send({ message: 'Карточка с указанным ID не найдена' });
+        return res.status(400).send({ message: 'Карточка с указанным ID не найдена' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });

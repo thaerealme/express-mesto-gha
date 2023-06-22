@@ -14,8 +14,10 @@ app.use((req, res, next) => {
   req.user = {
     _id: '64938caf297880030df4781c',
   };
-
   next();
+});
+app.use('*', (req, res) => {
+  res.send({ message: 'Такой страницы не существует' });
 });
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));

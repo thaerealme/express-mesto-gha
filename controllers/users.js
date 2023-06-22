@@ -30,7 +30,7 @@ module.exports.doesUserExists = (req, res) => {
       if (user) {
         res.send(user);
       } else {
-        res.status(404).send({ message: 'Пользователь по указанному ID не найден' });
+        res.status(400).send({ message: 'Пользователь по указанному ID не найден' });
       }
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
@@ -38,7 +38,7 @@ module.exports.doesUserExists = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -53,7 +53,7 @@ module.exports.updateUser = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {

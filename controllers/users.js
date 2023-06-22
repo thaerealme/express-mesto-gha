@@ -28,6 +28,9 @@ module.exports.doesUserExists = (req, res) => {
   User.findById(req.params.id)
     .then((user) => res.send(user))
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Пользователь по указанному ID не найден' });
+      }
       if (err.name === 'CastError') {
         return res.status(404).send({ message: 'Пользователь по указанному ID не найден' });
       }

@@ -13,7 +13,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_INVALID).send({ message: 'Переданы некорректные данные для создания карточки' });
       }
       return res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
@@ -30,7 +30,7 @@ module.exports.deleteCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(ERROR_INVALID).send({ message: 'Указан некорректный ID' });
       }
       return res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
@@ -51,8 +51,8 @@ module.exports.likeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Указан некорректный ID' });
+      if (err.name === 'CastError') {
+        return res.status(ERROR_INVALID).send({ message: 'Указан некорректный ID' });
       }
       return res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
     });
@@ -72,8 +72,8 @@ module.exports.dislikeCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Указан некорректный ID' });
+      if (err.name === 'CastError') {
+        return res.status(ERROR_INVALID).send({ message: 'Указан некорректный ID' });
       }
       return res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
     });

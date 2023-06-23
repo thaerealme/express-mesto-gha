@@ -3,6 +3,11 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const { PORT = 3000 } = process.env;
+
+const ERROR_NOT_FOUND = 404;
+const ERROR_INVALID = 400;
+const ERROR_DEFAULT = 500;
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -26,3 +31,9 @@ app.use('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Ссылка на сервер: ${PORT}`);
 });
+
+module.exports = {
+  ERROR_NOT_FOUND,
+  ERROR_INVALID,
+  ERROR_DEFAULT,
+};

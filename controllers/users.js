@@ -13,7 +13,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return res.status(ERROR_INVALID).send({ message: 'Переданы некорректные данные при создании пользователя' });
       }
       return res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });

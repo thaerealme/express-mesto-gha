@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 
 const { PORT = 3000 } = process.env;
 
-const ERROR_NOT_FOUND = 404;
-const ERROR_INVALID = 400;
-const ERROR_DEFAULT = 500;
+module.exports.ERROR_NOT_FOUND = 404;
+module.exports.ERROR_INVALID = 400;
+module.exports.ERROR_DEFAULT = 500;
 
 const app = express();
 
@@ -31,9 +31,3 @@ app.use('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Ссылка на сервер: ${PORT}`);
 });
-
-module.exports = {
-  ERROR_NOT_FOUND,
-  ERROR_INVALID,
-  ERROR_DEFAULT,
-};

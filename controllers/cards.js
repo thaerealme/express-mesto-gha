@@ -10,7 +10,7 @@ module.exports.getCards = (req, res) => {
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
-  Card.create({ name, link, owner })
+  Card.create({ name, link, owner }, { runValidators: true })
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {

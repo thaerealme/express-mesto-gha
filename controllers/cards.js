@@ -13,7 +13,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return res.status(ERROR_INVALID).send({ message: 'Переданы некорректные данные для создания карточки' });
       }
       return res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });

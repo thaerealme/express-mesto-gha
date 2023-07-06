@@ -2,6 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
+// celebrate({
+//   body: Joi.object().keys({
+//     email: Joi.string().required.email(),
+//     password: Joi.string().required(),
+//     name: Joi.string().required.min(2).max(30),
+//     about: Joi.string().required.min(2).max(30),
+//     avatar: Joi.string().required.min(2),
+//   }),
+// })
 
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
@@ -22,9 +31,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.post('/signin', login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required.min(2).max(30),
-    about: Joi.string().required.min(2).max(30),
-  }),
+    name: Joi.string().required().min(2).max(30),
+    password: Joi.string().required(),
+  }).unknown(true),
 }), createUser);
 app.use(auth);
 app.use('/users', require('./routes/users'));

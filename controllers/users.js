@@ -46,14 +46,11 @@ module.exports.doesUserExists = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Пользователь с таким ID не найден');
-      } else {
-        res.send(user);
       }
+      res.send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new InvalidError('Переданы некорректные данные');
-      }
+    .catch(() => {
+      throw new InvalidError('Переданы некорректные данные');
     })
     .catch(next);
 };

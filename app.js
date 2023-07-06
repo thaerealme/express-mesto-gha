@@ -35,7 +35,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required(),
     about: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(/https?:\/\/[www]*[a-z0-9-._~:/?#\\@!$&'()*+,;=]+[.ru]*/),
   }).unknown(true),
 }), createUser);
 app.use(auth);

@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 // celebrate({
 //   body: Joi.object().keys({
 //     email: Joi.string().required.email(),
@@ -45,6 +45,8 @@ app.use('/cards', require('./routes/cards'));
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Такой страницы не существует' });
 });
+
+app.user(errors());
 
 app.use((err, req, res) => {
   const { statusCode = 500, message } = err;

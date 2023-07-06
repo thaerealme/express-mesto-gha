@@ -50,7 +50,7 @@ module.exports.doesUserExists = (req, res, next) => {
       res.send(user);
     })
     .catch(() => {
-      throw new InvalidError('Переданы некорректные данные');
+      throw new NotFoundError('Переданы некорректные данные');
     })
     .catch(next);
 };

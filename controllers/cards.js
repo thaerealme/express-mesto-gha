@@ -49,14 +49,11 @@ module.exports.likeCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка с указанным ID не найдена');
-      } else {
-        res.send(card);
       }
+      res.send(card);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new InvalidError('Указан некорректный ID');
-      }
+    .catch(() => {
+      throw new InvalidError('Указан некорректный ID');
     })
     .catch(next);
 };

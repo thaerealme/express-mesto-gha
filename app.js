@@ -46,7 +46,7 @@ app.use('*', (req, res) => {
   res.status(404).send({ message: 'Такой страницы не существует' });
 });
 
-app.user(errors());
+app.use(errors());
 
 app.use((err, req, res) => {
   const { statusCode = 500, message } = err;

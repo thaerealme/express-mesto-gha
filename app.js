@@ -2,24 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-// celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required.email(),
-//     password: Joi.string().required(),
-//     name: Joi.string().required.min(2).max(30),
-//     about: Joi.string().required.min(2).max(30),
-//     avatar: Joi.string().required.min(2),
-//   }),
-// })
 
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
-
-// module.exports.ERROR_NOT_FOUND = 404;
-// module.exports.ERROR_INVALID = 400;
-// module.exports.ERROR_DEFAULT = 500;
 
 const app = express();
 

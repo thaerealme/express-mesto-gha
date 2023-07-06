@@ -32,11 +32,11 @@ app.post('/signin', login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    password: Joi.string().required(),
+    password: Joi.string(),
     about: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
+    email: Joi.string().email(),
     avatar: Joi.string().pattern(/https?:\/\/[www]*[a-z0-9-._~:/?#\\@!$&'()*+,;=]+[.ru]*/),
-  }).unknown(false),
+  }).unknown(true),
 }), createUser);
 app.use(auth);
 app.use('/users', require('./routes/users'));

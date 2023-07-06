@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-error');
 const InvalidError = require('../errors/invalid-error');
-const AuthError = require('../errors/auth-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -26,10 +25,12 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        throw new AuthError('Карточка с указанным ID не найдена');
+        throw new NotFoundError('Карточка с указанным ID не найдена');
       }
       if (String(req.user._id) !== String(card.owner)) {
-        throw new AuthError('Нет полномочий для удаления карточки');
+        const error = new Error('Нет полномочий для удаления карточки');
+        error.statusCode = 403;
+        next(error);
       }
       Card.findByIdAndRemove(req.params.cardId)
         .then((deleted) => {

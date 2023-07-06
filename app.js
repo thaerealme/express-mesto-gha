@@ -36,7 +36,7 @@ app.post('/signup', celebrate({
     about: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
     avatar: Joi.string().pattern(/https?:\/\/[www]*[a-z0-9-._~:/?#\\@!$&'()*+,;=]+[.ru]*/),
-  }),
+  }).unknown(false),
 }), createUser);
 app.use(auth);
 app.use('/users', require('./routes/users'));

@@ -19,8 +19,10 @@ module.exports.createUser = (req, res, next) => {
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
-    })).select('+password')
-    .then((user) => res.send({ user }))
+    }))
+    .then((user) => {
+      res.send({ ...user, password });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new InvalidError('Переданы некорректные данные при создании пользователя');

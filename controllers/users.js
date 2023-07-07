@@ -30,29 +30,28 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new InvalidError('Переданы некорректные данные при создании пользователя');
+        next(new InvalidError('Переданы некорректные данные при создании пользователя'));
+        return;
       }
       if (err.code === 11000) {
         const error = new Error('Пользователь с такой почтой уже есть');
         error.statusCode = 409;
         next(error);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.doesUserExists = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь с таким ID не найден');
+        next(new NotFoundError('Пользователь с таким ID не найден'));
       }
       res.send(user);
     })
     .catch(() => {
-      throw new NotFoundError('Переданы некорректные данные');
-    })
-    .catch(next);
+      next(new NotFoundError('Переданы некорректные данные'));
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -60,17 +59,16 @@ module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь по указанному ID не найден');
+        next(new NotFoundError('Пользователь по указанному ID не найден'));
       } else {
         res.send(user);
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new InvalidError('Переданы некорректные данные при обновлении профиля');
+        next(new InvalidError('Переданы некорректные данные при обновлении профиля'));
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.updateAvatar = (req, res, next) => {
@@ -78,17 +76,16 @@ module.exports.updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь по указанному ID не найден');
+        next(new NotFoundError('Пользователь по указанному ID не найден'));
       } else {
         res.send(user);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new InvalidError('Переданы некорректные данные при обновлении аватара');
+        next(new InvalidError('Переданы некорректные данные при обновлении аватара'));
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.login = (req, res, next) => {
@@ -104,21 +101,19 @@ module.exports.login = (req, res, next) => {
       res.send({ token });
     })
     .catch(() => {
-      throw new AuthError('Произошла ошибка');
-    })
-    .catch(next);
+      next(new AuthError('Произошла ошибка'));
+    });
 };
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Ошибка при получении информации о пользователе');
+        next(new NotFoundError('Ошибка при получении информации о пользователе'));
       }
       res.send(user);
     })
     .catch(() => {
-      throw new AuthError('Произошла ошибка');
-    })
-    .catch(next);
+      next(new AuthError('Произошла ошибка'));
+    });
 };

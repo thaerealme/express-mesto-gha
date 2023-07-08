@@ -64,12 +64,11 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка с указанным ID не найдена');
+        next(new NotFoundError('Карточка с указанным ID не найдена'));
       }
       res.send(card);
     })
     .catch(() => {
-      throw new NotFoundError('Указан некорректный ID');
-    })
-    .catch(next);
+      next(new NotFoundError('Указан некорректный ID'));
+    });
 };

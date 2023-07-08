@@ -31,14 +31,13 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные при создании пользователя'));
-        return;
       }
       if (err.code === 11000) {
         const error = new Error('Пользователь с такой почтой уже есть');
         error.statusCode = 409;
         next(error);
       }
-      next(err); // 1
+      next(err);
     });
 };
 
@@ -68,7 +67,6 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные при обновлении профиля'));
-        return;
       }
       next(err);
     });
@@ -88,7 +86,7 @@ module.exports.updateAvatar = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new InvalidError('Переданы некорректные данные при обновлении аватара'));
       }
-      next(err); // 2
+      next(err);
     });
 };
 
@@ -99,7 +97,6 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       if (!user) {
         next(new AuthError('Некорректные данные'));
-        return;
       }
       const token = jwt.sign(
         { _id: user._id },

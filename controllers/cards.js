@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-error');
 const InvalidError = require('../errors/invalid-error');
+const AccessError = require('../errors/access-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -27,7 +28,7 @@ module.exports.deleteCard = (req, res, next) => {
         next(new NotFoundError('Карточка с указанным ID не найдена'));
       }
       if (String(req.user._id) !== String(card.owner)) {
-        next(new InvalidError('Недостаточно прав для удаления карточки'));
+        next(new AccessError('Недостаточно прав для удаления карточки'));
       }
       Card.findByIdAndRemove(req.params.cardId)
         .then((deleted) => {
@@ -45,14 +46,11 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка с указанным ID не найдена');
+        next(NotFoundError('Карточка с указанным ID не найдена'));
       }
       res.send(card);
     })
-    .catch(() => {
-      throw new NotFoundError('Указан некорректный ID');
-    })
-    .catch(next);
+    .catch((next));
 };
 
 module.exports.dislikeCard = (req, res, next) => {

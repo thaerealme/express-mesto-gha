@@ -50,7 +50,10 @@ module.exports.likeCard = (req, res, next) => {
       }
       res.send(card);
     })
-    .catch((next));
+    .catch(() => {
+      throw new NotFoundError('Указан некорректный ID');
+    })
+    .catch(next);
 };
 
 module.exports.dislikeCard = (req, res, next) => {

@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-error');
-// const InvalidError = require('../errors/invalid-error');
-const AuthError = require('../errors/auth-error');
+const InvalidError = require('../errors/invalid-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
@@ -16,10 +15,9 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        console.log(err);
+        next(new InvalidError('Переданы некорректные данные для создания карточки'));
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports.deleteCard = (req, res, next) => {
@@ -29,7 +27,7 @@ module.exports.deleteCard = (req, res, next) => {
         next(new NotFoundError('Карточка с указанным ID не найдена'));
       }
       if (String(req.user._id) !== String(card.owner)) {
-        next(new AuthError('Недостаточно прав для удаления карточки'));
+        next(new InvalidError('Недостаточно прав для удаления карточки'));
       }
       Card.findByIdAndRemove(req.params.cardId)
         .then((deleted) => {

@@ -52,11 +52,11 @@ module.exports.likeCard = (req, res, next) => {
       res.send(card);
     })
     .catch(() => {
-      throw new NotFoundError('Указан некорректный ID');
+      next(new NotFoundError('Указан некорректный ID'));
     });
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -70,5 +70,6 @@ module.exports.dislikeCard = (req, res) => {
     })
     .catch(() => {
       throw new NotFoundError('Указан некорректный ID');
-    });
+    })
+    .catch(next);
 };

@@ -38,6 +38,7 @@ module.exports.createUser = (req, res, next) => {
         error.statusCode = 409;
         next(error);
       }
+      next(err); // 1
     });
 };
 
@@ -67,7 +68,9 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные при обновлении профиля'));
+        return;
       }
+      next(err);
     });
 };
 
@@ -85,6 +88,7 @@ module.exports.updateAvatar = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new InvalidError('Переданы некорректные данные при обновлении аватара'));
       }
+      next(err); // 2
     });
 };
 

@@ -18,6 +18,7 @@ module.exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные для создания карточки'));
       }
+      next(err);
     });
 };
 
@@ -52,11 +53,10 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch(() => {
       throw new NotFoundError('Указан некорректный ID');
-    })
-    .catch(next);
+    });
 };
 
-module.exports.dislikeCard = (req, res, next) => {
+module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -70,6 +70,5 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch(() => {
       throw new NotFoundError('Указан некорректный ID');
-    })
-    .catch(next);
+    });
 };

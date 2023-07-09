@@ -31,13 +31,13 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные при создании пользователя'));
-      }
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         const error = new Error('Пользователь с такой почтой уже есть');
         error.statusCode = 409;
         next(error);
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -45,13 +45,11 @@ module.exports.doesUserExists = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь с таким ID не найден'));
+        throw new NotFoundError('Пользователь с таким ID не найден'); // ,
       }
       res.send(user);
     })
-    .catch(() => {
-      next(new NotFoundError('Переданы некорректные данные'));
-    });
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -67,8 +65,9 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные при обновлении профиля'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -83,10 +82,11 @@ module.exports.updateAvatar = (req, res, next) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные при обновлении аватара'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -95,9 +95,6 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        next(new AuthError('Некорректные данные'));
-      }
       const token = jwt.sign(
         { _id: user._id },
         'some-secret-key',
@@ -115,10 +112,11 @@ module.exports.getUserInfo = (req, res, next) => {
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Ошибка при получении информации о пользователе'));
+      } else {
+        res.send(user);
       }
-      res.send(user);
     })
     .catch(() => {
-      next(new AuthError('Произошла ошибка'));
+      next(new InvalidError('Произошла ошибка'));
     });
 };

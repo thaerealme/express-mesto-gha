@@ -17,8 +17,9 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные для создания карточки'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -27,14 +28,14 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         next(new NotFoundError('Карточка с указанным ID не найдена'));
-      }
-      if (String(req.user._id) !== String(card.owner)) {
+      } else if (String(req.user._id) !== String(card.owner)) {
         next(new AccessError('Недостаточно прав для удаления карточки'));
+      } else {
+        return Card.findByIdAndRemove(req.params.cardId)
+          .then((deleted) => {
+            res.send(deleted);
+          });
       }
-      Card.findByIdAndRemove(req.params.cardId)
-        .then((deleted) => {
-          res.send(deleted);
-        });
     })
     .catch((next));
 };
@@ -47,12 +48,16 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        next(NotFoundError('Карточка с указанным ID не найдена'));
+        throw new NotFoundError('Карточка с указанным ID не найдена');
       }
       res.send(card);
     })
-    .catch(() => {
-      next(new NotFoundError('Указан некорректный ID'));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new InvalidError('Карточка с указанным ID не найдена'));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -68,7 +73,11 @@ module.exports.dislikeCard = (req, res, next) => {
       }
       res.send(card);
     })
-    .catch(() => {
-      next(new NotFoundError('Указан некорректный ID'));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new InvalidError('Карточка с указанным ID не найдена'));
+      } else {
+        next(err);
+      }
     });
 };

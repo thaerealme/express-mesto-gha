@@ -45,7 +45,7 @@ module.exports.doesUserExists = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь с таким ID не найден'); // ,
+        throw new NotFoundError('Пользователь с таким ID не найден');
       }
       res.send(user);
     })

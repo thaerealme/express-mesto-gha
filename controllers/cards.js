@@ -53,7 +53,7 @@ module.exports.likeCard = (req, res, next) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new InvalidError('Карточка с указанным ID не найдена'));
       } else {
         next(err);
@@ -74,7 +74,7 @@ module.exports.dislikeCard = (req, res, next) => {
       res.send(card);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new InvalidError('Карточка с указанным ID не найдена'));
       } else {
         next(err);

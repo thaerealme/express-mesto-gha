@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-error');
 const InvalidError = require('../errors/invalid-error');
-const AuthError = require('../errors/auth-error');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -102,9 +101,7 @@ module.exports.login = (req, res, next) => {
       );
       res.send({ token });
     })
-    .catch(() => {
-      next(new AuthError('Произошла ошибка'));
-    });
+    .catch(next);
 };
 
 module.exports.getUserInfo = (req, res, next) => {
@@ -116,7 +113,5 @@ module.exports.getUserInfo = (req, res, next) => {
         res.send(user);
       }
     })
-    .catch(() => {
-      next(new InvalidError('Произошла ошибка'));
-    });
+    .catch(next);
 };

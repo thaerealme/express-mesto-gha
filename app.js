@@ -10,7 +10,6 @@ const NotFoundError = require('./errors/not-found-error');
 const allowedCors = [
   'https://thaerealme.nomoredomains.xyz',
   'http://thaerealme.nomoredomains.xyz',
-  '127.0.0.1:3000',
 ];
 
 const { PORT = 3000 } = process.env;
@@ -27,22 +26,21 @@ app.use(requestLogger);
 app.use((req, res, next) => {
   const { origin } = req.headers;
   if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Origin', origin);
+    return res.end();
   }
   next();
 });
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   const { method } = req;
   const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
   const requestHeaders = req.headers['access-control-request-headers'];
   if (method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
   }
-  next();
 });
 
 

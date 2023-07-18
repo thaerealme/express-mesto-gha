@@ -8,8 +8,8 @@ const { createUser, login } = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-error');
 
 const allowedCors = [
-  'https://thaerealme.nomoredomains.xyz',
-  'http://thaerealme.nomoredomains.xyz',
+  'https://thaerealme.nomoredomains.xyz/',
+  'http://thaerealme.nomoredomains.xyz/',
 ];
 
 const { PORT = 3000 } = process.env;
@@ -27,7 +27,6 @@ app.use((req, res, next) => {
   const { origin } = req.headers;
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
-    return res.end();
   }
   next();
 });

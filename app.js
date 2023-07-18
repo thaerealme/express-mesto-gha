@@ -23,8 +23,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(requestLogger);
 app.use((res, req, next) => {
-  const { origin } = res.headers;
-  const { method } = res;
+  const { origin } = req.headers;
+  const { method } = req;
   const requestHeaders = req.headers['access-control-request-headers'];
   const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
   if (allowedCord.includes(origin)) {

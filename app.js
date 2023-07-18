@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(requestLogger);
-app.use((res, req, next) => {
+app.use((req, res, next) => {
   const { origin } = req.headers;
   const { method } = req;
   const requestHeaders = req.headers['access-control-request-headers'];

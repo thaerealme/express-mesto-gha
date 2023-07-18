@@ -7,11 +7,11 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { createUser, login } = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-error');
 
-const allowedCord = [
-  'https://thaerealme.nomoredomains.xyz',
-  'http://thaerealme.nomoredomains.xyz',
-  '127.0.0.1:3000',
-];
+// const allowedCors = [
+//   'https://thaerealme.nomoredomains.xyz',
+//   'http://thaerealme.nomoredomains.xyz',
+//   '127.0.0.1:3000',
+// ];
 
 const { PORT = 3000 } = process.env;
 
@@ -23,26 +23,27 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(requestLogger);
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  if (allowedCord.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  next();
-});
-app.use((req, res, next) => {
-  const { method } = req;
-  const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
-  const requestHeaders = req.headers['access-control-request-headers'];
-  const { origin } = req.headers;
-  if (method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-    res.header('Access-Control-Allow-Headers', requestHeaders);
-    return res.end();
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   const { origin } = req.headers;
+//   if (allowedCors.includes(origin)) {
+//     res.header('Access-Control-Allow-Origin', origin);
+//   }
+//   next();
+// });
+
+// app.use((req, res, next) => {
+//   const { method } = req;
+//   const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
+//   const requestHeaders = req.headers['access-control-request-headers'];
+//   const { origin } = req.headers;
+//   if (method === 'OPTIONS') {
+//     res.header('Access-Control-Allow-Origin', origin);
+//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+//     res.header('Access-Control-Allow-Headers', requestHeaders);
+//     return res.end();
+//   }
+//   next();
+// });
 
 
 app.post('/signin', celebrate({

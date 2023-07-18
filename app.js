@@ -3,8 +3,14 @@ const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 
 const auth = require('./middlewares/auth');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { createUser, login } = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-error');
+
+const allowedCord = [
+  'https://thaerealme.nomoredomains.xyz',
+  'http://thaerealme.nomoredomains.xyz',
+];
 
 const { PORT = 3000 } = process.env;
 
@@ -14,6 +20,35 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+
+app.use(requestLogger);
+app.use((res, req, next) => {
+  const { origin } = res.headers;
+  const { method } = res;
+  const requestHeaders = req.headers['access-control-request-headers'];
+  const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
+  if (allowedCord.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.end();
+  }
+  next();
+});
+// app.use((res, req, next) => {
+//   const { method } = res;
+//   const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
+//   const requestHeaders = req.headers['access-control-request-headers'];
+
+//   if (method === 'OPTIONS') {
+//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+//     res.header('Access-Control-Allow-Headers', requestHeaders);
+//     return res.end();
+//   }
+// });
+
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -33,6 +68,8 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
+
+app.use(errorLogger);
 
 app.use('*', (req, res, next) => {
   next(new NotFoundError('Такой страницы не существует'));

@@ -24,12 +24,16 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 app.use(requestLogger);
 app.use((req, res, next) => {
   const { origin } = req.headers;
-  const { method } = req;
-  const requestHeaders = req.headers['access-control-request-headers'];
-  const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
   if (allowedCord.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
+  next();
+});
+app.use((req, res, next) => {
+  const { method } = req;
+  const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
+  const requestHeaders = req.headers['access-control-request-headers'];
+
   if (method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
@@ -37,17 +41,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-// app.use((res, req, next) => {
-//   const { method } = res;
-//   const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
-//   const requestHeaders = req.headers['access-control-request-headers'];
-
-//   if (method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     return res.end();
-//   }
-// });
 
 
 app.post('/signin', celebrate({

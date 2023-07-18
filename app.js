@@ -8,8 +8,8 @@ const { createUser, login } = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-error');
 
 const allowedCors = [
-  'https://thaerealme.nomoredomains.xyz/',
-  'http://thaerealme.nomoredomains.xyz/',
+  'https://thaerealme.nomoredomains.xyz',
+  'http://thaerealme.nomoredomains.xyz',
 ];
 
 const { PORT = 3000 } = process.env;
@@ -19,28 +19,27 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+
+app.use(requestLogger);
+
+app.use(function (req, res, next) {
   const { origin } = req.headers;
+  const { method } = req;
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+  const requestHeaders = req.headers['access-control-request-headers'];
+
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
-  next();
-});
-
-app.use((req, res) => {
-  const { method } = req;
-  const DEFAULT_ALLOWED_METHODS = 'GET, HEAD, PUT, PATCH, POST, DELETE';
-  const requestHeaders = req.headers['access-control-request-headers'];
   if (method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
   }
+  next();
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
-
-app.use(requestLogger);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({

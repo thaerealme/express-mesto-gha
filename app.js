@@ -41,13 +41,13 @@ app.use((req, res, next) => {
 });
 
 
-app.post('/signin', celebrate({
+app.post('/sign-in', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
 }), login);
-app.post('/signup', celebrate({
+app.post('/sign-up', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     password: Joi.string().required(),

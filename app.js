@@ -82,5 +82,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Ссылка на сервер: ${PORT}`);
+  console.log(`Порт: ${PORT}`);
 });

@@ -66,11 +66,11 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use(errorLogger);
-
 app.use('*', (req, res, next) => {
   next(new NotFoundError('Такой страницы не существует'));
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
@@ -82,8 +82,8 @@ app.use((err, req, res, next) => {
       message: statusCode === 500
         ? 'На сервере произошла ошибка'
         : message,
-    })
-    .catch(next);
+    });
+  next();
 });
 
 app.listen(PORT, () => {

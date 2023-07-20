@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-error');
 const InvalidError = require('../errors/invalid-error');
+const UniqueError = require('../errors/unique-error');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -31,9 +32,7 @@ module.exports.createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new InvalidError('Переданы некорректные данные при создании пользователя'));
       } else if (err.code === 11000) {
-        const error = new Error('Пользователь с такой почтой уже есть');
-        error.statusCode = 409;
-        next(error);
+        next(new UniqueError('Пользователь с такой почтой уже есть'));
       } else {
         next(err);
       }
